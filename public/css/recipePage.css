@@ -1,0 +1,110 @@
+body
+{
+    font-family: 'Roboto', sans-serif;
+}
+
+header  > a
+{
+    text-decoration: none;
+    color: black;
+}
+
+header > a:visited
+{
+    text-decoration: none;
+    color: black;
+}
+
+
+header
+{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 55px;
+    text-align: left;
+    width: 100%;
+    padding-left: 2vw;
+}
+
+#base-container
+{
+    display: flex;
+    flex-direction: column;
+}
+
+img
+{
+    width: 100vw;
+    height: 40vh;
+    margin-top: 2vh;
+}
+
+#ingr
+{
+    width: 99vw;
+    border-style: dashed;
+    border-color: darkgreen;
+}
+
+#desc
+{
+    width: 99vw;
+    border-style: dashed;
+    border-color: darkgreen;
+}
+
+#name_header
+{
+    margin-top: 2vh;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 35px;
+    color: darkgreen;
+}
+
+.recipe-stat
+{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    column-gap: 3vw;
+    padding-left: 1vw;
+}
+
+.recipe-rate-specific
+{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    text-align: center;
+
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    color: darkgreen;
+}
+
+#ingr_header
+{
+    margin-top: 1vh;
+    font-weight: 400;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: darkgreen;
+}
+
+
+#desc_header
+{
+    font-weight: 400;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: darkgreen;
+}
+
+
+
+

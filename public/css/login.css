@@ -96,6 +96,13 @@ body
     cursor: pointer;
 }
 
+.no-valid
+{
+    border: 2px solid red;
+    border-radius: 1em;
+    outline: none;
+}
+
 
 @media only screen and (max-device-width: 500px)
 {
@@ -111,3 +118,4 @@ body
          width: 70%;
     }
 }
+

@@ -7,6 +7,7 @@ session_start();
         <title>LOGIN PAGE</title>
         <script src="https://kit.fontawesome.com/94db409358.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="/public/css/index.css">
+        <link rel="stylesheet" type="text/css" href="/public/css/regulamin.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;900&display=swap" rel="stylesheet">
@@ -62,9 +63,7 @@ session_start();
                         </a>
                     </li>
                     <li>
-                        <a href="regulamin">
-                            REGULAMIN
-                        </a>
+                        REGULAMIN
                     </li>
                     <?php if (isset($_SESSION['user'])) : ?>
                     <li>
@@ -101,48 +100,11 @@ session_start();
                     </form>
                 </div>
             -->
-                <section class="recipes">
-                    <?php if($recipes): ?>
-                    <?php foreach ($recipes as $recipe): ?>
-                        <a href = <?php echo "\"display/{$recipe['id']}\"" ?>>
-                    <div class="recipe-1"<?php echo "id=\"{$recipe['id']}\"" ?>>
-                        <?php echo "<img src=\"public/img/{$recipe['photo_path']}\">"?>
-                        <div class="recipe-stat">
-                            <div class="recipe-title">
-                                <h3><?php echo $recipe['name'] ?></h3>
-                            </div>
-
-                            <div class="recipe-rate">
-                                <div class="recipe-rate-specific">
-                                    <i class="fa-solid fa-heart"></i>
-                                    <div id ="likes">
-                                      <?php echo $recipe['likes'] ?>
-                                    </div>
-                                </div>
-
-                                <div class="recipe-rate-specific" id="prep_time">
-                                    <i class="fa-solid fa-bell"></i>
-                                    <?php echo $recipe['prep_time'] ?>
-                                </div>
-
-                                <div class="recipe-rate-specific" id="ingr_num">
-                                    <i class="fa-solid fa-briefcase"></i>
-                                    <?php echo $recipe['ingr_num'] ?>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div id="add-fav">
-                            <?php if($recipe['fav'] === 1): ?>
-                            <i class="fa-solid fa-heart"></i>
-                            <?php else : ?>
-                            <i class="fa-regular fa-heart"></i>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                        </a>
-                    <?php endforeach; ?>
-                    <?php endif; ?>
+                <section id="regulamin">
+                    <h1>PRZEPISY</h1>
+                            1. Przepisy powinny być jak najprostsze.</br>
+                            2. Liczba skladnikow nie powinna przekraczac 15.</br>
+                            3. Składniki powinny być łatwo dostępne.</br>
                 </section>
             </main>
         
@@ -150,40 +112,3 @@ session_start();
  
     </body>
 </html>
-
-
-<template id="recipe-template">
-    <a href ="">
-    <div class="recipe-1">
-        <img id="image" src="">
-        <div class="recipe-stat">
-            <div class="recipe-title">
-                <h3>name</h3>
-            </div>
-
-            <div class="recipe-rate">
-                <div class="recipe-rate-specific">
-                    <i class="fa-solid fa-heart"></i>
-                    <div id ="likes">likes</div>
-                </div>
-
-                <div class="recipe-rate-specific" id="prep_time">
-                    <i class="fa-solid fa-bell"></i>
-                    prep_time
-                </div>
-
-                <div class="recipe-rate-specific" id="ingr_num">
-                    <i class="fa-solid fa-briefcase"></i>
-                     ingr_num
-                </div>
-            </div>
-
-        </div>
-
-        <div id="add-fav">
-            <i class="fa-solid fa-heart"></i>
-            <i class="fa-regular fa-heart"></i>
-        </div>
-    </div>
-    </a>
-    </template>

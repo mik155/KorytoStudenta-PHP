@@ -2,6 +2,7 @@
 <html lang="pl">
     <head>
         <title>REGISTER PAGE</title>
+        <script src="public/js/script.js" type="text/javascript" defer></script>
         <script src="https://kit.fontawesome.com/94db409358.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="public/css/login.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,12 +16,20 @@
                 Register
             </div>
 
+            <?php
+            if(isset($messages))
+            {
+                foreach ($messages as $message)
+                    echo $message;
+            }
+            ?>
+
             <div class="login-container">
                 <form action = "register" method="POST">
                     <input name="login" type="text" placeholder="LOGIN">
                     <input name="password" type="password" placeholder="PASSWORD"> 
                     <input name="confirm-password" type="password" placeholder="CONFIRM PASSWORD">
-                    <input name="email" type="password" placeholder="EMAIL">
+                    <input name="email" type="text" placeholder="EMAIL">
 
                     <button type="submit">CREATE ACCOUNT</button>
                 </form>

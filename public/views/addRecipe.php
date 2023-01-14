@@ -4,7 +4,7 @@ session_start();
 <!DOCTYPE html>
 <html lang="pl">
     <head>
-        <title>ADD PROJECT</title>
+        <title>ADD RECIPE</title>
         <script src="https://kit.fontawesome.com/94db409358.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="/public/css/index.css">
         <link rel="stylesheet" type="text/css" href="/public/css/addRecipe.css">
@@ -16,12 +16,14 @@ session_start();
     <body>
         <div class="base-container">
             <header>
-                <i class="fa-solid fa-bowl-food"></i>
-                Koryto Studenta
+                <a href="mainPage">
+                    <i class="fa-solid fa-bowl-food"></i>
+                    Koryto Studenta
+                </a>
             </header>
 
           <div class="sidenav">
-                <form action="login" id="side-menu-form" >
+                <form action="mainPage" id="side-menu-form" >
                     <button onclick="closeNav()">ZATWIERDŹ</button>
                     <div class="side-menu-opt">
                         <label for="pasta">PASTA</label>
@@ -73,7 +75,9 @@ session_start();
                         </a>
                     </li>
                     <li>
-                        REGULAMIN
+                        <a href="regulamin">
+                            REGULAMIN
+                        </a>
                     </li>
                     <?php if (isset($_SESSION['user'])) : ?>
                         <li>
@@ -125,7 +129,7 @@ session_start();
                             <input type="number" name="ingr_num" rows="1"></input>
 
                             <label for="ingr" >SKŁADNIKI:</label>
-                            <textarea name="ingr" rows="5" placeholder="wymień po -"></textarea>
+                            <textarea name="ingr" rows="5" placeholder="skladnik1;skladnik2; ..."></textarea>
 
                             <label for="desc" >LISTA KROKÓW:</label>
                             <textarea name="desc" rows="10" placeholder="opis przygotowania"></textarea>
@@ -134,9 +138,9 @@ session_start();
                             <input type="file" name="file">
 
                             <div class="buttons">
-                                <button type="submit" name="addRecipe">DODAJ</button>
-                                <a href="mainPage.php">
-                                    <button type="button" name="cancel">ANULUJ</button>
+                                <button class="confirm-button" type="submit" name="addRecipe">DODAJ</button>
+                                <a href="mainPage">
+                                    <button class="confirm-button" type="button" name="cancel">ANULUJ</button>
                                 </a>
                             </div>
                         </form>

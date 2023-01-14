@@ -26,4 +26,16 @@ class UserRepository extends Repository
             $user['email']
         );
     }
+
+    public function addUser($login, $hash, $email)
+    {
+        $stmt = $this->database->connect()->prepare(
+            'SELECT createUser(:login, :hash, :email) result'
+        );
+        $stmt->bindParam(':login', $login, PDO::PARAM_STR);
+        $stmt->bindParam(':hash', $hash, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['result'];
+    }
 }

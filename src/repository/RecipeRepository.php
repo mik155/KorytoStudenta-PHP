@@ -2,12 +2,61 @@
 session_start();
 
 require_once 'Repository.php';
+require_once 'UserRepository.php';
 require_once __DIR__.'/../models/User.php';
 require_once __DIR__.'/../models/Recipe.php';
 
 
 class RecipeRepository extends Repository
 {
+
+    public function getRecipeById($id)
+    {
+        $stmt = $this->database->connect()->prepare(
+            'SELECT * FROM "Recipe" WHERE id = :id'
+        );
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->getSingleRecipeFromQuery($stmt->fetch(PDO::FETCH_ASSOC));
+    }
+    public function getRecipeByNameAndCat($name, $categories)
+    {
+        if($name !== '')
+            $name = '%'.strtoupper($name).'%';
+        $index = 1;
+        if (isset($_SESSION['user']) && in_array("favourites", $categories))
+            $query = 'SELECT *, R.name  title, R.id id, (? in (SELECT user_id FROM "FAV_RECIPES" FR WHERE R.id = FR.recipe_id)) fav FROM "Recipe" R JOIN "RecipeCategory" RC ON R.category_id = RC.id ';
+        else if(isset($_SESSION['user']))
+            $query = 'SELECT *, R.name title, R.id id, (? in (SELECT user_id FROM "FAV_RECIPES" FR WHERE R.id = FR.recipe_id)) fav FROM "Recipe" R JOIN "RecipeCategory" RC ON R.category_id = RC.id ';
+        else
+            $query = 'SELECT *, R.name title, R.id id FROM "Recipe" R JOIN "RecipeCategory" RC ON R.category_id = RC.id ';
+
+        if($name !== '')
+            $query .= 'WHERE UPPER(R.name) LIKE ? AND UPPER(RC.name) IN (\'';
+        else
+            $query .= 'WHERE UPPER(RC.name) IN (\'';
+
+        $query .=  implode("','",  $categories)
+            . "')";
+
+        $stmt = $this->database->connect()->prepare($query);
+
+        if(isset($_SESSION['user']))
+        {
+            $userRepo = new UserRepository();
+            $user = $userRepo->getUser($_SESSION['user']);
+            $stmt->bindParam($index, $user->getId(), PDO::PARAM_INT);
+            $index += 1;
+        }
+
+        if($name !== '')
+            $stmt->bindParam($index, $name, PDO::PARAM_STR);
+
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
     public function getRecipes()
     {
         $recipes = $this->getAllRecipes();
@@ -24,6 +73,42 @@ class RecipeRepository extends Repository
         }
 
         return $recipes;
+    }
+
+    public function like($recipe_id, $user_id)
+    {
+        $stmt = $this->database->connect()->prepare(
+            'CALL likeRecipe(:recipe_id, :user_id)'
+        );
+        $stmt->bindParam(':recipe_id', $recipe_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $stmt = $this->database->connect()->prepare(
+            'SELECT COUNT(*) likes FROM "FAV_RECIPES" WHERE recipe_id = :recipe_id'
+        );
+        $stmt->bindParam(':recipe_id', $recipe_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function dislike($recipe_id, $user_id)
+    {
+        $stmt = $this->database->connect()->prepare(
+            'CALL dislikeRecipe(:recipe_id, :user_id)'
+        );
+        $stmt->bindParam(':recipe_id', $recipe_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $stmt = $this->database->connect()->prepare(
+            'SELECT COUNT(*) likes FROM "FAV_RECIPES" WHERE recipe_id = :recipe_id'
+        );
+        $stmt->bindParam(':recipe_id', $recipe_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
 
     private function getAllRecipes()
@@ -72,6 +157,21 @@ class RecipeRepository extends Repository
             $row['likes'],
             $row['creator_id'],
         $row['photo_path']);
+    }
+
+    private function getSingleRecipeFromQuery($row)
+    {
+        return new Recipe(
+            $row['id'],
+            '',
+            $row['name'],
+            $row['description'],
+            $row['ingridients'],
+            $row['prep_time'],
+            $row['ingr_num'],
+            $row['likes'],
+            $row['creator_id'],
+            $row['photo_path']);
     }
 
     public function getCategories()

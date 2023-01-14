@@ -19,12 +19,19 @@
             $this->render("register");
         }
 
+        public function regulamin()
+        {
+            $this->render("regulamin");
+        }
         public function mainPage()
         {
             $recipeRepo = new RecipeRepository();
+            $categories = $recipeRepo->getCategories();
+
+            $recipeRepo = new RecipeRepository();
             $recipes = $recipeRepo->getRecipes();
 
-            $this->render("mainPage", ['recipes' => $recipes]);
+            $this->render("mainPage", ['recipes' => $recipes, 'recipeCategories' => $categories]);
         }
 
     }

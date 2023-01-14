@@ -7,7 +7,7 @@ require_once __DIR__.'/../repository/UserRepository.php';
 class RecipeController extends AppControler
 {
     const MAX_FILE_SIZE = 1024 * 1024;
-    const SUPPORTED_TYPES = ['image/png', 'image/jpeg'];
+    const SUPPORTED_TYPES = ['image/jpeg'];
     const UPLOAD_DIRECTORY = '/../public/img/';
     private $messages = [];
     private $recipeRepository;
@@ -19,7 +19,19 @@ class RecipeController extends AppControler
         $this->userRepository = new UserRepository();
     }
 
+    public function search()
+    {
+        $conntentType = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+        if($conntentType === "application/json")
+        {
+            $content = trim(file_get_contents("php://input"));
+            $decoded = json_decode($content, true);
 
+            header('Content-type: application/json');
+            http_response_code(200);
+            echo json_encode($this->recipeRepository->getRecipeByNameAndCat($decoded['search'], $decoded['categories']));
+        }
+    }
     public function addRecipe()
     {
         $newName = $this->getFreeFileName();
@@ -35,7 +47,7 @@ class RecipeController extends AppControler
                 dirname(__DIR__).self::UPLOAD_DIRECTORY.$newName.'.jpg');
 
             $recipe = new Recipe(-1, $_POST['category'], $_POST['title'], $_POST['desc'],$_POST['ingr'],
-            $_POST['prep_time'], $_POST['ingr_num'], 0, -1, $newName);
+            $_POST['prep_time'], $_POST['ingr_num'], 0, -1, $newName . '.jpg');
             $this->recipeRepository->addRecipe($recipe);
 
             $url = "http://$_SERVER[HTTP_HOST]";
@@ -45,6 +57,29 @@ class RecipeController extends AppControler
 
         $url = "http://$_SERVER[HTTP_HOST]";
         header("Location: {$url}/mainPage");
+    }
+
+    public function like($recipe_id)
+    {
+        if(isset($_SESSION['user']))
+        {
+            $user = $this->userRepository->getUser($_SESSION['user']);
+            header('Content-type: application/json');
+            http_response_code(200);
+
+            echo json_encode($this->recipeRepository->like($recipe_id, $user->getId()));
+        }
+    }
+
+    public function dislike($recipe_id)
+    {
+        if(isset($_SESSION['user']))
+        {
+            $user = $this->userRepository->getUser($_SESSION['user']);
+            header('Content-type: application/json');
+            http_response_code(200);
+            echo json_encode($this->recipeRepository->dislike($recipe_id, $user->getId()));
+        }
     }
 
     private function validate(array $file): bool
@@ -62,6 +97,17 @@ class RecipeController extends AppControler
         return true;
     }
 
+    public function display($recipeId)
+    {
+        if($recipeId === "mainPage")
+        {
+            $url = "http://$_SERVER[HTTP_HOST]";
+            header("Location: {$url}/mainPage");
+        }
+        $recipe = $this->recipeRepository->getRecipeById($recipeId);
+        $this->render("recipePage", ['recipe' => $recipe->toArray()]);
+    }
+
     public function getFreeFileName()
     {
         $name = $this->getFileCount() + 1;
@@ -73,4 +119,6 @@ class RecipeController extends AppControler
         $iterator = new FilesystemIterator(dirname(__DIR__).self::UPLOAD_DIRECTORY);
         return iterator_count($iterator);
     }
+
+
 }
